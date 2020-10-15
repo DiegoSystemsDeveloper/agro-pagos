@@ -109,7 +109,6 @@
           { key: 'email', label: 'E-mail'},
           { key: 'actions', label: 'Actions'}
         ],
-        msg:false
       }
     },
     methods: {
@@ -150,12 +149,9 @@
           }
         }
       },deleteUser(id){
-        this.showMsgBoxTwo()
-        if(!this.msg){
-          for(let index = 0; index < this.items.length; index++){
-            if(id == this.items[index].id){
-              this.items.splice(index,1)
-            }
+        for(let index = 0; index < this.items.length; index++){
+          if(id == this.items[index].id){
+            this.items.splice(index,1)
           }
         }
       },updateUser(id){
@@ -196,25 +192,6 @@
         this.form.lastName = ''
         this.form.id = ''
         this.form.ocupation = null
-      },showMsgBoxTwo() {
-        this.msg = false
-        this.$bvModal.msgBoxConfirm('ESTA SEGURO QUE DESEA ELIMINAR EL USUARIO?.', {
-          title: 'ALERTA!',
-          size: 'sm',
-          buttonSize: 'sm',
-          okVariant: 'danger',
-          okTitle: 'ELIMINAR',
-          cancelTitle: 'CANCELAR',
-          footerClass: 'p-2',
-          hideHeaderClose: false,
-          centered: true
-        })
-          .then(value => {
-            this.msg = value
-          })
-          .catch(err => {
-            // An error occurred
-          })
       }
     }
   }
