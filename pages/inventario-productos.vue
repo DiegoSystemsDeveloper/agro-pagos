@@ -3,6 +3,20 @@
     <Navegacion />
     <div class="row mt-5">
       <div class="col-sm-6">
+        <h1 v-if="productos.lenght > 0">Mis productos publicados</h1>
+        <h1 v-else>No tienes productos publicados</h1>
+        <br />
+        <div v-for="(producto, index) in productos" :key="index">
+          <Producto
+            :nombre="producto.nombre"
+            :precio="producto.precio"
+            :fecha="producto.fecha"
+            :descripcion="producto.descripcion"
+          />
+          <br />
+        </div>
+      </div>
+      <div class="col-sm-6">
         <div class="card">
           <div class="card-header bg-dark text-white text-center">
             <h3>{{ titulo }}</h3>
@@ -14,7 +28,7 @@
                   type="text"
                   class="form-control"
                   placeholder="Nombre del producto"
-                  v-model="nombreProducto"
+                  v-model="newProducto.nombre"
                 />
               </div>
               <div class="form-group">
@@ -22,6 +36,7 @@
                   type="number"
                   class="form-control"
                   placeholder="Precio base"
+                  v-model="newProducto.precio"
                 />
               </div>
               <div class="form-group">
@@ -32,47 +47,12 @@
                   cols="30"
                   rows="10"
                   placeholder="Descripcion"
+                  v-model="newProducto.descripcion"
                 ></textarea>
               </div>
               <div class="form-group">
-                <button class=" btn btn-primary btn-block" @click="guardar">
+                <div class="btn btn-primary btn-block" @click="guardar">
                   Publicar
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-6">
-        <h1>Mis productos publicados</h1>
-        <br />
-        <div class="card">
-          <div class="card-header bg-dark text-white text-center">
-            <h3>Arroz en polvo</h3>
-          </div>
-          <div class="card-body">
-            <form action="">
-              <div class="form-group">
-                <p>Precio base: <span>$ 10000</span></p>
-              </div>
-              <div class="form-group">
-                <p>Fecha publicacion: <span>21-10-2020</span></p>
-              </div>
-              <div class="form-group">
-                <p>Descripcion: <span>Hermoso arroz blanco en polvo</span></p>
-              </div>
-              <div class="form-group">
-                <div class="row">
-                  <div class="col-sm-6">
-                    <button class=" btn btn-danger btn-block">
-                      Eliminar
-                    </button>
-                  </div>
-                  <div class="col-sm-6">
-                    <button class=" btn btn-secondary btn-block">
-                      editar
-                    </button>
-                  </div>
                 </div>
               </div>
             </form>
@@ -85,24 +65,30 @@
 
 <script>
 import Navegacion from "../components/Navegacion";
+import Producto from "../components/Producto";
 
 export default {
   components: {
-    Navegacion
+    Navegacion,
+    Producto
   },
   name: "inventario",
   data() {
     return {
       titulo: "Crear publicación",
       productos: [],
-      nombreProducto: ""
+      newProducto: {
+        nombre: "",
+        precio: "",
+        fecha: new Date(),
+        descripcion: ""
+      }
     };
   },
   methods: {
     guardar() {
-      alert(this.data.nombreProducto)
+      this.productos.push(this.newProducto);
     }
   }
-
 };
 </script>
