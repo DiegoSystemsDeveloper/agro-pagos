@@ -11,6 +11,8 @@
               <a href="../login" @click="hide" id="item2"><b-icon-people-fill></b-icon-people-fill> USUARIO</a>
               <br>
               <a href="../inventario-productos" @click="hide" id="item2"><b-icon-basket2-fill></b-icon-basket2-fill> PRODUCTOS</a>
+              <br>
+              <a href="../videos" @click="hide" id="item2"><b-icon-play-fill></b-icon-play-fill> VIDEOS</a>
             </b-nav>
           </nav>
         </div>
