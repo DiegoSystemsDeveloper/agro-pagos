@@ -3,7 +3,7 @@
     <Navegacion />
     <div id="fondo">
       <h1>AGRO PAGOS</h1>
-      <br>
+      <a v-b-modal.modal-1>REGISTRARME</a>
       <p>Que vendes?<br>Que compras?<br>Somos una red para negociar con proveedores.</p>
     </div>
   </div>
@@ -32,6 +32,9 @@ body{
   background-image: url('../static/images/logo3.jpg');
   background-position: center;
   background-size: cover;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
   box-shadow: 0px 5px 7px rgba(0, 0, 0, 0.521);
   text-justify: initial;
   text-align: center;
@@ -51,8 +54,23 @@ body{
 
 #fondo p{
   color: #fff;
-  font-size: 15px;
-  text-shadow: 0px 2px 3px black;
+  font-size: 16px;
+  text-shadow: 0px 3px 4px black;
+}
+
+#fondo a{
+  text-decoration: none;
+  color: white;
+  font-size: 21px;
+  background: rgb(13, 194, 52);
+  border-radius: 20px;
+  padding: 2vh 5vh 2vh 5vh;
+  transition: 0.1s;
+}
+
+#fondo a:hover{
+  background-color: rgb(33, 175, 52);
+  transform: scale(1.1,1.1);
 }
 
 </style>

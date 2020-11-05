@@ -1,0 +1,357 @@
+<template>
+    <div>
+        <h1 class="text-center">OFERTAS</h1>
+
+        <b-container>
+
+            <b-form >
+                <label>Seleccione un producto</label>
+                <b-form-select v-model="selected" :options="options" :state="listaState"></b-form-select>
+                <p>Valor producto: {{selected}}</p>
+            
+                <b-form-group label = "Seleccione modo de oferta" class = "my-2" >
+                    <b-form-radio-group
+                        v-click='cambiarFormulario()'
+                        v-model="value"
+                        :options="pagos"
+                        name="radio-validation"
+                        :state="state"
+                    >
+                    <b-form-invalid-feedback :state="state">Elige uno por favor.</b-form-invalid-feedback>
+                    <b-form-valid-feedback :state="state">Gracias</b-form-valid-feedback>
+                    </b-form-radio-group>
+                </b-form-group>
+
+                <b-container v-show="monetario">
+                    <h4>Oferta monetaria</h4>
+                    <label>Ingrese valor a ofertar</label>
+                    <div role="group">
+                        <label for="input-live">Valor de la oferta:</label>
+                        <b-form-input
+                            type="number"
+                          id="input-live"
+                          v-model="name"
+                          :state="nameState"
+                          aria-describedby="input-live-help input-live-feedback"
+                          placeholder="Valor oferta"
+                          trim
+                        ></b-form-input>
+                        <b-form-invalid-feedback id="input-live-feedback">
+                          Ingresa el valor en miles
+                        </b-form-invalid-feedback>
+                        <b-form-text id="input-live-help">Tu oferta completa</b-form-text>
+                    </div>
+                </b-container>
+
+                <b-container v-show="trueque">
+                    <h4>Oferta de trueque</h4>
+                    <label >Inserte una imagen del elemento a intercambiar</label>
+                    <b-form-file
+                        v-model="file1"
+                        :state="Boolean(file1)"
+                        placeholder="Choose a file or drop it here..."
+                        drop-placeholder="Drop file here..."
+                    ></b-form-file>
+                    <div class="mt-3">Selected file: {{ file1 ? file1.name : '' }}</div>
+
+                </b-container>
+
+                <b-container class="my-5">
+                    <b-button @click="agregar()" variant="success" v-show="!estadoBtn">Crear</b-button>
+                    <b-button @click="actualizar" variant="primary" v-show="estadoBtn">Actualizar</b-button>
+                </b-container>
+
+                <b-modal 
+                    v-model="modeloAgregar" 
+                    size="sm" 
+                    title="Mensaje" 
+                    ok-only
+                ><p class="my-1">Tu oferta ha sido creada</p>
+                </b-modal>
+
+                <b-modal id="my-modal" size="sm" title="Eliminar" v-model="modeloEliminar" hide-footer>
+                    <div class="d-block">¿Desea eliminar la oferta seleccionada?</div>
+                    <br>
+                    <b-button @click="eliminar" variant="success">Si</b-button>
+                    <b-button @click="modeloEliminar = false"  variant="danger" >No</b-button>
+                </b-modal>
+
+                <b-modal 
+                    v-model="modeloAlerta" 
+                    size="sm" 
+                    title="Aviso"
+                    ok-only
+                ><p class="my-1">Debes completar todos los campos</p>
+                </b-modal>
+
+                <b-modal 
+                    v-model="modeloEliminado" 
+                    size="sm" 
+                    title="Eliminado" 
+                    ok-only
+                ><p class="my-1">Oferta eliminada</p>
+                </b-modal>
+                <b-modal 
+                    v-model="modeloActualizado" 
+                    size="sm" 
+                    title="Actualizado" 
+                    ok-only
+                ><p class="my-1">Oferta actualizada</p>
+                </b-modal>
+
+            </b-form>
+        </b-container>
+        
+        <div>
+            <b-table striped hover :items="ofertas" :fields="fields">
+                <template v-slot:cell(acciones)="row">
+                    <b-button variant="danger" size="sm" @click="solicitudEliminar(row.index)" class="mr-1">
+                    Eliminar
+                    </b-button>
+                    <b-button variant="primary" size="sm" @click="editar(row.index)" class="mr-1">
+                    Editar
+                    </b-button>
+                    
+                </template>
+            </b-table>
+        </div>
+    </div>
+</template>
+
+<script>
+import { isNull } from 'util';
+export default {
+    name: 'Ofertas',
+    data(){
+        return{
+            modeloAlerta: null,
+            modeloAgregar: null,
+            modeloEliminar: null,
+            modeloEliminado: null,
+            modeloActualizado: null,
+
+            filaEliminar: null,
+
+            file1: null,
+
+            value: null,
+            name: '',
+
+            selected: null,
+
+            pago: null,
+            monetario: false,
+            trueque: false,
+            producto: null,
+            precio: null,
+            prueba: null,
+
+            file2: null,
+            iGlobal: null,
+
+            estadoBtn: false,
+            idPk: 0,
+
+            ofertas: [],
+            fields: ['id','producto',  'valor', 'metodo', "oferta", "acciones"],
+
+            pagos:[
+                {text: 'Oferta monetaria', value: 'Monetario'},
+                {text: 'Trueque', value: 'Trueque', }
+            ],
+            
+            options: [
+                { value: null, text: 'Productos', disabled: true },
+                { value: '100.000', text: 'Aguacate hass x10Kilos'},
+                { value: '240.000', text: 'Lote de manzana verde x80Kilos' },
+                { value: '180.000', text: 'Limon tahiti x8Kilos' },
+                { value: '200.000', text: 'Piña oro miel x50Kilos' },
+                { value: '120.000', text: 'Tomate cherry x20Kilos'}
+            ],
+ 
+        }
+        
+            
+    },
+
+    mounted: function(){
+
+        let datos = JSON.parse(localStorage.getItem('Ofetas'))
+        if(datos === null){
+            this.oferta = [];
+        }else{
+            this.ofertas = datos;    
+        }
+
+    },
+
+   
+
+    methods:{
+
+        cambiarFormulario(){
+            
+            if(this.value === 'Monetario'){
+               this.monetario = true;
+               this.trueque = false;
+            }
+
+            if(this.value === 'Trueque'){
+                this.monetario = false;
+                this.trueque = true;
+            }
+        },
+
+        buscar(){
+                this.prueba = this.options.find(valor => valor.value === this.selected);
+                this.precio = this.prueba.value;
+                this.producto = this.prueba.text;
+        },
+
+        agregar(){
+            
+            if(this.selected != null && this.value != null){
+                
+                this.buscar();
+
+                if(this.value === 'Monetario' && this.name != ''){
+                    this.ofertas.push({
+                        id: this.idPk,
+                        producto: this.producto,
+                        valor: this.precio,
+                        metodo: this.value,
+                        oferta: this.name
+                    });
+
+                    localStorage.setItem('Ofetas', JSON.stringify(this.ofertas));
+                    console.log(this.ofertas);
+
+                    this.todofalso();
+                    this.modeloAgregar = true;
+                    this.idPk++;
+
+                }else if(this.value === 'Trueque' && this.file1 != null){
+                    
+                    this.ofertas.push({
+                        id: this.idPk,
+                        producto: this.producto,
+                        valor: this.precio,
+                        metodo: this.value,
+                        oferta: this.file1.name
+                    });
+                    localStorage.setItem('Ofetas', JSON.stringify(this.ofertas));
+                    console.log(this.ofertas);
+
+                    this.todofalso();
+                    this.modeloAgregar = true;
+                    this.idPk++;
+                }else{
+                    this.modeloAlerta = true;
+                }
+
+            }else{
+                this.modeloAlerta = true;
+            }
+                
+        },
+
+        solicitudEliminar(i){
+            this.filaEliminar = i;
+            this.modeloEliminar = true;
+        },
+
+        eliminar(){
+            this.ofertas.splice(this.filaEliminar,1);
+            localStorage.setItem('Ofetas', JSON.stringify(this.ofertas));
+            this.modeloEliminar = false;
+            this.modeloEliminado = true;
+            this.todofalso();
+
+        },
+
+        editar(i){
+
+            this.iGlobal = i;
+            this.estadoBtn = true;
+
+            this.options[i].text = this.ofertas[i].producto;
+                this.selected = this.ofertas[i].valor;
+                this.value = this.ofertas[i].metodo;
+
+            if(this.ofertas[i].metodo === 'Monetario'){
+                this.name = this.ofertas[i].oferta;
+                this.monetario = true;
+                console.log(this.iGlobal);
+            }
+
+            if(this.ofertas[i].metodo === 'Trueque'){
+                this.file1 = this.ofertas[i].oferta;
+                this.trueque = true;
+                console.log(this.iGlobal);
+            }
+            
+        },
+
+        actualizar(){
+
+            if(this.selected != null && this.value != null){
+                this.buscar();
+                
+                this.ofertas[this.iGlobal].producto = this.producto;
+                this.ofertas[this.iGlobal].valor = this.precio;
+                this.ofertas[this.iGlobal].metodo = this.value;
+
+                if(this.ofertas[this.iGlobal].metodo === 'Monetario' && this.name != ''){
+                    this.ofertas[this.iGlobal].oferta = this.name;
+                    this.modeloActualizado = true;
+                    localStorage.setItem('Ofetas', JSON.stringify(this.ofertas));
+                    this.todofalso();
+
+                }else if(this.value === 'Trueque' && this.file1 != null){
+                    this.ofertas[this.iGlobal].oferta = this.file1.name;
+                    this.modeloActualizado = true;
+                    localStorage.setItem('Ofetas', JSON.stringify(this.ofertas));
+                    this.todofalso();
+                }else{
+                    this.modeloAlerta = true;
+                }
+
+                
+            }else{
+                this.modeloAlerta = true;
+            }
+        },
+        todofalso(){
+            this.filaEliminar= null;
+            this.file1= null;
+            this.value= null;
+            this.name='';
+            this.selected= null;
+            this.pago= null;
+            this.monetario= false;
+            this.trueque= false;
+            this.producto= null;
+            this.precio= null;
+            this.prueba= null;            
+            this.iGlobal= null;
+            this.estadoBtn= false;
+        }
+    },
+
+    computed: {
+
+      state() {
+        return Boolean(this.value)
+      },
+      nameState() {
+        return this.name.length > 3 ? true : false
+      },
+      listaState(){
+          return this.selected != null ? true : false
+      }
+
+    }, 
+
+}
+
+</script>

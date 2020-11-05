@@ -68,7 +68,6 @@
       <b-button v-show="form.update" @click="updateUser2">Actualizar</b-button>
       <b-button v-show="form.update" @click="cancelUpdate">Cancelar</b-button>
     </b-form>
-    <!--
     <b-table striped hover :items="items" :fields="fields" :tbody-tr-class="rowClass">
       <template v-slot:cell(actions)="row">
         <b-button :disabled="form.update" variant="success" size="sm" @click="updateUser(row.item.id)">
@@ -79,7 +78,6 @@
         </b-button>
       </template>
     </b-table>
-    -->
   </div> 
 </template>
 
