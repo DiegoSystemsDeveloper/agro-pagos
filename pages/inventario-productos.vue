@@ -3,8 +3,7 @@
     <Navegacion />
     <div class="row mt-5">
       <div class="col-sm-6">
-        <h1 v-if="productos.lenght > 0">Mis productos publicados</h1>
-        <h1 v-else>No tienes productos publicados</h1>
+        <h1>Mis productos publicados</h1>
         <br />
         <div v-for="(producto, index) in productos" :key="index">
           <Producto
@@ -28,7 +27,7 @@
                   type="text"
                   class="form-control"
                   placeholder="Nombre del producto"
-                  v-model="newProducto.nombre"
+                  value= {newProducto.nombre}
                 />
               </div>
               <div class="form-group">
@@ -36,7 +35,7 @@
                   type="number"
                   class="form-control"
                   placeholder="Precio base"
-                  v-model="newProducto.precio"
+                  
                 />
               </div>
               <div class="form-group">
@@ -87,7 +86,10 @@ export default {
   },
   methods: {
     guardar() {
-      this.productos.push(this.newProducto);
+      this.productos = [...this.productos, this.newProducto]
+    },
+    eliminar() {
+
     }
   }
 };
