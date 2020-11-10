@@ -17,14 +17,14 @@
         <div class="form-group">
           <div class="row">
             <div class="col-sm-6">
-              <button class=" btn btn-danger btn-block">
+              <div class=" btn btn-danger btn-block" @click="eliminar">
                 Eliminar
-              </button>
+              </div>
             </div>
             <div class="col-sm-6">
-              <button class=" btn btn-secondary btn-block">
+              <div class=" btn btn-secondary btn-block">
                 editar
-              </button>
+              </div>
             </div>
           </div>
         </div>
@@ -36,6 +36,11 @@
 <script>
 export default {
     name: 'Producto',
-    props: ["nombre", "precio", "fecha", "descripcion"]
+    props: ["id","nombre", "precio", "fecha", "descripcion"],
+    methods: {
+      eliminar() {
+        this.$emit("eliminar", this.id);
+      }
+    }
 }
 </script>

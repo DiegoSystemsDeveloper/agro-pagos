@@ -7,10 +7,12 @@
         <br />
         <div v-for="(producto, index) in productos" :key="index">
           <Producto
+            :id="producto.id"
             :nombre="producto.nombre"
             :precio="producto.precio"
             :fecha="producto.fecha"
             :descripcion="producto.descripcion"
+            @eliminar="eliminar"
           />
           <br />
         </div>
@@ -21,13 +23,14 @@
             <h3>{{ titulo }}</h3>
           </div>
           <div class="card-body">
-            <form action="">
+            <form>
               <div class="form-group">
                 <input
                   type="text"
                   class="form-control"
                   placeholder="Nombre del producto"
-                  value= {newProducto.nombre}
+                  v-model="nombre"
+                  required
                 />
               </div>
               <div class="form-group">
@@ -35,7 +38,8 @@
                   type="number"
                   class="form-control"
                   placeholder="Precio base"
-                  
+                  v-model="precio"
+                  required
                 />
               </div>
               <div class="form-group">
@@ -46,7 +50,8 @@
                   cols="30"
                   rows="10"
                   placeholder="Descripcion"
-                  v-model="newProducto.descripcion"
+                  v-model="descripcion"
+                  required
                 ></textarea>
               </div>
               <div class="form-group">
@@ -65,6 +70,7 @@
 <script>
 import Navegacion from "../components/Navegacion";
 import Producto from "../components/Producto";
+import { v4 as uuidv4 } from "uuid";
 
 export default {
   components: {
@@ -76,20 +82,37 @@ export default {
     return {
       titulo: "Crear publicación",
       productos: [],
-      newProducto: {
-        nombre: "",
-        precio: "",
-        fecha: new Date(),
-        descripcion: ""
-      }
+      nombre: "",
+      precio: "",
+      fecha: "",
+      descripcion: ""
     };
   },
   methods: {
     guardar() {
-      this.productos = [...this.productos, this.newProducto]
+      if (
+        this.nombre.trim() === "" ||
+        this.precio.trim() === "" ||
+        this.descripcion.trim() === ""
+      ) {
+        alert("faltan campos por llenar");
+      } else {
+        this.productos.push({
+          id: uuidv4(),
+          nombre: this.nombre,
+          precio: this.precio,
+          fecha: new Date(),
+          descripcion: this.descripcion
+        });
+        (this.nombre = ""),
+          (this.precio = ""),
+          (this.fecha = ""),
+          (this.descripcion = "");
+      }
     },
-    eliminar() {
-
+    eliminar(id) {
+      let newProductos = this.productos.filter(producto => producto.id !== id);
+      this.productos = newProductos;
     }
   }
 };
