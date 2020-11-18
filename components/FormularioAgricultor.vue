@@ -29,6 +29,16 @@
         ></b-form-input>
       </b-form-group>
 
+      <b-form-group id="input-group-7" label="Telefono:" label-for="input-6">
+        <b-form-input
+          id="input-7"
+          v-model="form.telefono"
+          type="number"
+          required
+          placeholder="Telefono"
+        ></b-form-input>
+      </b-form-group>
+
       <b-form-group id="input-group-4" label="Rol:" label-for="input-4">
         <b-form-select
           id="input-4"
@@ -82,6 +92,10 @@
 </template>
 
 <script> 
+
+import config from "../assets/config";
+const url_api = config.API_URL;
+
   export default {
     name: 'Agricultor',
     data() {
@@ -93,6 +107,7 @@
           name: '',
           rol: null,
           password: '',
+          telefono: null,
           update:false
         },
         rol: [{ text: 'Selecciona una', value: null }, 'Agricultor', 'Transportista', 'Comprador'],
@@ -110,19 +125,34 @@
       rowClass(item){
         if(!item.update ) return 'table-light'
         if(item.update ) return 'table-warning'
-      },onSubmit(evt) {
+      },
+      
+      async onSubmit(evt) {
         evt.preventDefault()
+
+        let url = url_api + 'usuarios';
+        let parametros = {};
+        parametros.id_usuario = this.form.id;
+        parametros.nombre = this.form.name;
+        parametros.apellido = this.form.lastName;
+        parametros.telefono = this.form.telefono;
+        parametros.correo = this.form.email;
+        parametros.rol = this.form.rol;
+        parametros.contraseña = this.form.password;
+        let  {data} = await this.$axios.post(url, parametros);
+        console.log(data);
+
         //alert(JSON.stringify(this.form))
         if(!this.existe(this.form.id)){
           this.items.push(
             {
-              id:this.form.id,
-              name:this.form.name,
-              lastName:this.form.lastName,
-              email:this.form.email,
-              ocupation:this.form.ocupation,
-              password:this.form.password,
-              update:false
+              id: this.form.id,
+              name: this.form.name,
+              lastName: this.form.lastName,
+              email: this.form.email,
+              ocupation: this.form.ocupation,
+              password: this.form.password,
+              update: false
             }
           )
         }
@@ -137,19 +167,25 @@
         this.$nextTick(() => {
           this.show = true
         })
-      },existe(id){
+      },
+      
+      existe(id){
         for(let index = 0; index < this.items.length; index++){
           if(id == this.items[index].id){
             return true
           }
         }
-      },deleteUser(id){
+      },
+      
+      deleteUser(id){
         for(let index = 0; index < this.items.length; index++){
           if(id == this.items[index].id){
             this.items.splice(index,1)
           }
         }
-      },updateUser(id){
+      },
+      
+      updateUser(id){
         for(let index = 0; index < this.items.length; index++){
           if(id == this.items[index].id){
             this.form.email = this.items[index].email
@@ -161,7 +197,9 @@
             this.items[index].update = true
           }
         }
-      },updateUser2(){
+      },
+      
+      updateUser2(){
         for(let index = 0; index < this.items.length; index++){
           if(this.items[index].update){
             this.items[index].email = this.form.email
@@ -174,13 +212,17 @@
             this.clear()
           }
         }
-      },cancelUpdate(){
+      },
+      
+      cancelUpdate(){
         this.form.update = false
         this.clear()
         for(let index = 0; index < this.items.length; index++){
           this.items[index].update = false
         }
-      },clear(){
+      },
+      
+      clear(){
         this.form.email = ''
         this.form.name = ''
         this.form.password = ''

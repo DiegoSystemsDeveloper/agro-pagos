@@ -1,4 +1,7 @@
 <template>
+
+
+
   <div class="card">
     <div class="card-header bg-dark text-white text-center">
       <h3>{{nombre}}</h3>
@@ -7,6 +10,9 @@
       <form action="">
         <div class="form-group">
           <p>Precio base: <span>$ {{precio}}</span></p>
+        </div>
+        <div class="form-group">
+          <p>Imagen: <span>$ {{imagen.name}}</span></p>
         </div>
         <div class="form-group">
           <p>Fecha publicacion: <span>{{fecha}}</span></p>
@@ -35,7 +41,9 @@
 
 <script>
 export default {
-    name: 'Producto',
-    props: ["nombre", "precio", "fecha", "descripcion"]
+
+  name: 'Producto',
+  props: ["nombre", "precio","imagen", "fecha", "descripcion"]
+
 }
 </script>

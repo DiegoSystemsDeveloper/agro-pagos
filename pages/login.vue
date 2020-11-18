@@ -6,12 +6,12 @@
 </template>
 <script>
 import Login from "../components/FormularioLogin";
-import Navegacion from '../components/Nav2'
+import Nav2 from '../components/Nav2'
 import Agricultor from "../components/FormularioAgricultor"
 export default {
   components: {
     Login,
-    Navegacion,
+    Nav2,
     Agricultor
   },
 };

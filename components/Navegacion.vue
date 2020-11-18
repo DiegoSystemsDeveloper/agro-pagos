@@ -15,12 +15,15 @@
             <template #button-content>
               <em>Usuario</em>
             </template>
-            <b-dropdown-item href="#">Perfil</b-dropdown-item>
-            <b-dropdown-item href="#">Sign in</b-dropdown-item>
+            <b-dropdown-item v-b-modal.modal-2>Sign in</b-dropdown-item>
             <b-dropdown-item v-b-modal.modal-1>Registro</b-dropdown-item>
             <b-modal id="modal-1" title="Registro" hide-footer>
              <Agricultor />
             </b-modal>
+            <b-modal id="modal-2" title="Iniciar sesión" hide-footer>
+             <FormLogin />
+            </b-modal>
+            
           </b-nav-item-dropdown>
         </b-navbar-nav>
       </b-collapse>
@@ -31,11 +34,14 @@
 <script>
 import Login from "../components/FormularioLogin";
 import Agricultor from "../components/FormularioAgricultor"
+import FormLogin from "../components/FormularioLogin"
+
 export default {
   name:'navegacion',
   components: {
     Login,
-    Agricultor
+    Agricultor,
+    FormLogin
   },
 };
 </script>

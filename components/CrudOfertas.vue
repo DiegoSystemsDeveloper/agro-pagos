@@ -184,9 +184,7 @@ export default {
         }
 
     },
-
-   
-
+    
     methods:{
 
         cambiarFormulario(){
@@ -203,9 +201,9 @@ export default {
         },
 
         buscar(){
-                this.prueba = this.options.find(valor => valor.value === this.selected);
-                this.precio = this.prueba.value;
-                this.producto = this.prueba.text;
+            this.prueba = this.options.find(valor => valor.value === this.selected);
+            this.precio = this.prueba.value;
+            this.producto = this.prueba.text;
         },
 
         agregar(){
@@ -347,7 +345,7 @@ export default {
         return this.name.length > 3 ? true : false
       },
       listaState(){
-          return this.selected != null ? true : false
+        return this.selected != null ? true : false
       }
 
     }, 

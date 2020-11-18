@@ -3,6 +3,7 @@
     <Navegacion />
     <div id="fondo">
       <h1>AGRO PAGOS</h1>
+      <a v-b-modal.modal-2>INICIAR SESION</a>
       <a v-b-modal.modal-1>REGISTRARME</a>
       <p>Que vendes?<br>Que compras?<br>Somos una red para negociar con proveedores.</p>
     </div>
@@ -13,11 +14,14 @@
 import Login from "./login";
 import Navegacion from "../components/Navegacion";
 import Agricultor from "../components/FormularioAgricultor"
+import FormLogin from "../components/FormularioLogin"
+
 export default {
   components: {
     Login,
     Navegacion,
-    Agricultor
+    Agricultor,
+    FormLogin
   }
 };
 </script>
