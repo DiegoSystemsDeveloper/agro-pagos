@@ -1,7 +1,7 @@
 <template>
   <div class="p-5">
     <b-form @submit="onSubmit" @reset="onReset" v-if="show">
-      <b-form-group id="input-group-1" label="Nombre:" label-for="input-1">
+      <b-form-group id="input-group-1" label="Nombre: *" label-for="input-1">
         <b-form-input
           id="input-1"
           v-model="form.name"
@@ -10,7 +10,7 @@
         ></b-form-input>
       </b-form-group>
       
-      <b-form-group id="input-group-2" label="Apellidos:" label-for="input-2">
+      <b-form-group id="input-group-2" label="Apellidos: *" label-for="input-2">
         <b-form-input
           id="input-2"
           v-model="form.lastName"
@@ -19,7 +19,7 @@
         ></b-form-input>
       </b-form-group>
 
-      <b-form-group id="input-group-3" label="Cedula:" label-for="input-3" v-show="form.update == false">
+      <b-form-group id="input-group-3" label="Cedula: *" label-for="input-3" v-show="form.update == false">
         <b-form-input
           id="input-3"
           v-model="form.id"
@@ -29,7 +29,7 @@
         ></b-form-input>
       </b-form-group>
 
-      <b-form-group id="input-group-7" label="Telefono:" label-for="input-6">
+      <b-form-group id="input-group-7" label="Telefono: *" label-for="input-6">
         <b-form-input
           id="input-7"
           v-model="form.telefono"
@@ -39,7 +39,7 @@
         ></b-form-input>
       </b-form-group>
 
-      <b-form-group id="input-group-4" label="Rol:" label-for="input-4">
+      <b-form-group id="input-group-4" label="Rol: *" label-for="input-4">
         <b-form-select
           id="input-4"
           v-model="form.rol"
@@ -63,7 +63,7 @@
         ></b-form-input>
       </b-form-group>
 
-      <b-form-group id="input-group-6" label="Contraseña:" label-for="input-6">
+      <b-form-group id="input-group-6" label="Contraseña: *" label-for="input-6">
         <b-form-input
           id="input-6"
           v-model="form.password"
@@ -78,7 +78,7 @@
       <b-button v-show="form.update" @click="updateUser2">Actualizar</b-button>
       <b-button v-show="form.update" @click="cancelUpdate">Cancelar</b-button>
     </b-form>
-    <b-table striped hover :items="items" :fields="fields" :tbody-tr-class="rowClass">
+    <b-table v-show="false" striped hover :items="items" :fields="fields" :tbody-tr-class="rowClass">
       <template v-slot:cell(actions)="row">
         <b-button :disabled="form.update" variant="success" size="sm" @click="updateUser(row.item.id)">
           Update
@@ -92,6 +92,7 @@
 </template>
 
 <script> 
+import { log } from 'util';
 
 import config from "../assets/config";
 const url_api = config.API_URL;
@@ -108,11 +109,15 @@ const url_api = config.API_URL;
           rol: null,
           password: '',
           telefono: null,
-          update:false
+          update:false,
+
+          usuario: []
         },
+
         rol: [{ text: 'Selecciona una', value: null }, 'Agricultor', 'Transportista', 'Comprador'],
         show: true,
         items: [],
+        props: ["estadoTabla"],
         fields: [
           { key: 'name', label: 'Nombre'},
           { key: 'lastName', label: 'Apellido'},
@@ -139,25 +144,23 @@ const url_api = config.API_URL;
         parametros.correo = this.form.email;
         parametros.rol = this.form.rol;
         parametros.contraseña = this.form.password;
+
         let  {data} = await this.$axios.post(url, parametros);
         console.log(data);
-
-        //alert(JSON.stringify(this.form))
-        if(!this.existe(this.form.id)){
-          this.items.push(
-            {
-              id: this.form.id,
-              name: this.form.name,
-              lastName: this.form.lastName,
-              email: this.form.email,
-              ocupation: this.form.ocupation,
-              password: this.form.password,
-              update: false
-            }
-          )
+        
+        
+        localStorage.setItem("userIn", JSON.stringify(data.info));
+            
+        if(data.info.rol === "Agricultor"){
+          this.$router.push("/inventario-productos");
+        }else if(data.info.rol === "Comprador"){
+          this.$router.push("/productosUsuario");
+        }else{
+          this.$router.push("/transportista");
         }
-        //this.con++
+       
       },
+
       onReset(evt) {
         evt.preventDefault()
         // Reset our form values
@@ -169,58 +172,6 @@ const url_api = config.API_URL;
         })
       },
       
-      existe(id){
-        for(let index = 0; index < this.items.length; index++){
-          if(id == this.items[index].id){
-            return true
-          }
-        }
-      },
-      
-      deleteUser(id){
-        for(let index = 0; index < this.items.length; index++){
-          if(id == this.items[index].id){
-            this.items.splice(index,1)
-          }
-        }
-      },
-      
-      updateUser(id){
-        for(let index = 0; index < this.items.length; index++){
-          if(id == this.items[index].id){
-            this.form.email = this.items[index].email
-            this.form.name = this.items[index].name
-            this.form.lastName = this.items[index].lastName
-            this.form.rol = this.items[index].rol
-            this.form.password = this.items[index].password
-            this.form.update = true
-            this.items[index].update = true
-          }
-        }
-      },
-      
-      updateUser2(){
-        for(let index = 0; index < this.items.length; index++){
-          if(this.items[index].update){
-            this.items[index].email = this.form.email
-            this.items[index].name = this.form.name
-            this.items[index].lastName = this.form.lastName
-            this.items[index].rol = this.form.rol
-            this.items[index].password = this.form.password
-            this.form.update = false
-            this.items[index].update = false
-            this.clear()
-          }
-        }
-      },
-      
-      cancelUpdate(){
-        this.form.update = false
-        this.clear()
-        for(let index = 0; index < this.items.length; index++){
-          this.items[index].update = false
-        }
-      },
       
       clear(){
         this.form.email = ''

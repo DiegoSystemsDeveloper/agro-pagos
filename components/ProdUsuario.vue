@@ -1,18 +1,45 @@
 <template>
     <div class="mt-2 ml-2">
-        <b-card-group columns>
-       
-        <b-card v-for="(producto, index) in productos" :key="index"
-            title=""
+        
+        <h3 class="text-center">PRODUCTOS</h3>
+
+        <div>
+            <b-carousel
+              id="carousel-fade"
+              style="text-shadow: 0px 0px 2px #000"
+              fade
+              indicators
+              img-width="1024"
+              img-height="480"
+            >
+              <b-carousel-slide
+                caption="Bienvenidos a agro pagos"
+                img-src="https://picsum.photos/1000/350/?image=517"
+              ></b-carousel-slide>
+
+              <b-carousel-slide
+                caption="Elimine intermediarios en su compra"
+                img-src="https://picsum.photos/1000/350/?image=1080"
+              ></b-carousel-slide>
+            </b-carousel>
+            
+            <hr noshade="noshade">
+        </div>
+
+        
+        
+        <b-card-group columns class="mt-3">
+            <b-card v-for="(producto, index) in productos" :key="index"
             tag="article"
-            style="max-width: 20rem;"
-            class="mb-2"
+            style="max-width: 24rem;"
+            class="ml-2"
             >
               <h5 class="text-center">Producto: {{producto.nombre}}</h5>
-              <p>Precio base: {{producto.precio}} </p>
-              <p>Imagen: {{producto.imagen.name}}</p>
+              <b-img center class="mt-3"  width=300px height=250px  src="https://www.lavozdelnorte.cl/wp-content/uploads/2019/12/frutas-verduras-730x482.jpg" alt="Center image"></b-img>
+              <p class="mt-2">Precio base: {{producto.precio_base}} </p>
+              <p>Imagen:</p>
               <p>Descripcion: {{producto.descripcion}}</p>
-              <b-button variant="success" @click="mostrarOcultar(index)" v-show="btnOfertas" class="mr-1" size="sm" block pill>
+              <b-button variant="success" @click="mostrarOcultar(index)" v-show="btnOfertas" size="sm" block pill>
                 Ofertar
               </b-button>
 
@@ -66,13 +93,13 @@
                 </b-container>
 
                 <b-container class="my-5">
-                    <b-button variant="success" @click="agregarOferta(producto.id)" size="sm" block pill>Enviar</b-button>
-                    <b-button variant="danger" @click="cancelarOferta" size="sm" block pill>Cancelar</b-button>
+                    <b-button variant="success" @click="agregarOferta(producto.id_producto)" size="sm" block pill>Enviar oferta</b-button>
+                    <b-button variant="danger" @click="cancelarOferta" size="sm" block pill>Cancelar oferta</b-button>
                 </b-container>
             </b-form>
-              
+             
         </b-card>
-  
+
         </b-card-group>
 
         <b-container>
@@ -83,19 +110,31 @@
                 ok-only
             ><p class="my-1">Debes completar todos los campos</p>
             </b-modal>
+            <b-modal 
+                v-model="modalAgregado" 
+                size="sm" 
+                title="Aviso"
+                ok-only
+            ><p class="my-1">Tu oferta ha sido enviada</p>
+            </b-modal>
         </b-container>
     </div>
     
 </template>
 
 <script>
+import config from "../assets/config";
+const url_api = config.API_URL;
 import { isNull, log } from 'util';
 export default {
 
     name: 'ProductoAgricultor',
     data(){
         return{
+            id_usuario: null,
+
             modalIncompleto: false,
+            modalAgregado: false,
             
             productos:[],
             ofertas:[],
@@ -119,52 +158,53 @@ export default {
         }
     },
 
-    mounted: function(){
-
-        let datos = JSON.parse(localStorage.getItem('ProductosAgricultor'))
-        if(datos === null){
-            this.productos = [];
-        }else{
-            this.productos = datos; 
-        }
-
+    mounted: async function(){
+        let usuario = JSON.parse(localStorage.getItem('userIn'))
+        this.id_usuario = usuario.id_usuario;
+        let url = url_api + 'productos';
+        let {data} = await this.$axios.get(url);
+        this.productos = data.info;
+        console.log(this.id_usuario);
+        console.log(data.info);
     },
 
     methods: {
 
-        agregarOferta(idProducto){
+        async agregarOferta(idProducto){
+            
+            let url = url_api + 'ofertas';
+            let parametros = {};
 
             if(this.modo === 'Monetario' && this.ofertaPesos != ''){
-                this.ofertas.push({
-                    id: 1,
-                    idProducto: idProducto,
-                    metodo: this.modo,
-                    oferta: this.ofertaPesos
-                });
-
-                localStorage.setItem('Ofertas', JSON.stringify(this.ofertas));
-                console.log(this.ofertas);
+                let url = url_api + 'ofertas';
+                
+                parametros.id_producto = idProducto;
+                parametros.metodos = this.modo;
+                parametros.ValorOferta = this.ofertaPesos;
+                parametros.cliente = this.id_usuario;
+                parametros.estado = "pendiente";
+               
+                let  {data} = await this.$axios.post(url, parametros);
                 this.productos[this.anterior].panel = false;
                 this.productos[this.anterioAux].panel = false;
+                this.modalAgregado = true;
 
             }else if(this.modo === 'Trueque' && this.file1 != null){
                 
-                this.ofertas.push({
-                    id: 1,
-                    idProducto: idProducto,
-                    metodo: this.modo,
-                    oferta: this.file1.name
-                });
-                localStorage.setItem('Ofertas', JSON.stringify(this.ofertas));
-                console.log(this.ofertas);
-                this.btnOfertas = true;
+                parametros.id_producto = idProducto;
+                parametros.metodos = this.modo;
+                parametros.ValorOferta = this.file1.name;
+                parametros.cliente = this.id_usuario;
+                parametros.estado = "pendiente"
+
+                let  {data} = await this.$axios.post(url, parametros);
                 this.productos[this.anterior].panel = false;
                 this.productos[this.anterioAux].panel = false;
+                this.modalAgregado = true;
             }else{
                 this.modalIncompleto = true;
             }
-
-            
+            this.btnOfertas = true;
         },
 
         cancelarOferta(){
@@ -190,7 +230,6 @@ export default {
                 this.productos[actual].panel = true;
 
             }
-
         },
 
         todoFalso(){

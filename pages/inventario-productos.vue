@@ -1,13 +1,13 @@
 <template>
   <div>
-    <Nav2 />
+    <Navegacion />
     <Prod />
   </div>
 </template>
 
 <script>
 import { log } from 'util';
-import Navegacion from "../components/Nav2";
+import Navegacion from "../components/NavAgricultor";
 
 import Prod from "../components/ProdAgricultor";
 export default {

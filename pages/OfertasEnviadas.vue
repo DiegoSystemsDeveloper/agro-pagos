@@ -1,17 +1,17 @@
 <template>
   <div>
     <Navegacion />
-    <Productos />
+    <Ofertas />
   </div>
 </template>
 
 <script>
 import Navegacion from '../components/NavComprador'
-import Productos from '../components/ProdUsuario'
+import Ofertas from '../components/OfertaEnviadas'
 export default {
   components: {
     Navegacion,
-    Productos
+    Ofertas
   },
 };
 </script>

@@ -6,13 +6,12 @@
         <div class="px-3 py-2">
           <nav >
             <b-nav vertical>
-              <a href="../ofertas" @click="hide" id="item2"><b-icon-shop></b-icon-shop> OFERTAS</a>
+              <a href="../login" @click="hide" id="item2"><b-icon-people-fill></b-icon-people-fill> MI PERFÍL</a>
               <br>
-              <a href="../login" @click="hide" id="item2"><b-icon-people-fill></b-icon-people-fill> USUARIO</a>
+              <a href="../ofertasUsuario" @click="hide" id="item2"><b-icon-bag-fill></b-icon-bag-fill> OFERTAS ENVIADAS</a>
               <br>
-              <a href="../inventario-productos" @click="hide" id="item2"><b-icon-basket2-fill></b-icon-basket2-fill> PRODUCTOS</a>
+              <a href="../productosUsuario" @click="hide" id="item2"><b-icon-basket2-fill></b-icon-basket2-fill> PRODUCTOS</a>
               <br>
-              <a href="../videos" @click="hide" id="item2"><b-icon-play-fill></b-icon-play-fill> VIDEOS</a>
             </b-nav>
           </nav>
         </div>
@@ -24,11 +23,6 @@
       <b-collapse id="nav-collapse" is-nav>
        <!-- Right aligned nav items -->
         <b-navbar-nav class="ml-auto">
-          <b-nav-form>
-            <b-form-input size="sm" class="mr-sm-2" placeholder="Search"></b-form-input>
-            <b-button size="sm" type="submit" id="bSearch">Search</b-button>
-          </b-nav-form>
-          <b-nav-item href="#" id="item1">Contacto</b-nav-item>
           <b-nav-item-dropdown right>
             <!-- Using 'button-content' slot -->
             <template #button-content>
@@ -76,7 +70,7 @@ export default {
   text-decoration: none;
   padding: 1vh;
   position: relative;
-  background-color: rgb(255, 250, 250);
+  background-color: rgb(241, 239, 239);
   color: black;
 }
 
@@ -84,8 +78,5 @@ export default {
   background-color: rgb(15, 14, 14);
 }
 
-#bSearch{
-  background-color: rgb(24, 22, 22);
-}
 
 </style>

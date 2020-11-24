@@ -1,18 +1,17 @@
-
 <template>
   <div>
     <Navegacion />
-    <Directorio />
+    <OfertasAgri />
   </div>
 </template>
 
 <script>
 import Navegacion from '../components/NavAgricultor'
-import Directorio from '../components/directorio'
+import OfertasAgri from '../components/ofertasAgricultor'
 export default {
   components: {
     Navegacion,
-    Directorio
+    OfertasAgri
   },
 };
 </script>

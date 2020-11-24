@@ -1,4 +1,3 @@
-
 <template>
   <div>
     <Navegacion />
@@ -7,12 +6,13 @@
 </template>
 
 <script>
-import Navegacion from '../components/NavAgricultor'
+
 import Directorio from '../components/directorio'
+import Navegacion from "../components/Navegacion";
 export default {
   components: {
-    Navegacion,
-    Directorio
+    Directorio,
+    Navegacion
   },
 };
 </script>

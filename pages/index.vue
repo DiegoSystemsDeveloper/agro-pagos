@@ -28,7 +28,7 @@ export default {
 <style>
 
 body{
-  background-color:rgb(219, 217, 217);
+  background-color:rgb(255, 255, 255);
   border-radius: 10px;
 }
 

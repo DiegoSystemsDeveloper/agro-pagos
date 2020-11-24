@@ -4,21 +4,24 @@
     <b-form @submit="login">
       <b-form-group
         id="input-group-email"
-        label="Dirección de correo electrónico:"
+        label="Dirección de correo electrónico: *"
         label-for="input-email"
       >
+      <div>
         <b-form-input
           id="input-email"
           type="email"
           v-model="email"
-          required
           placeholder="Ingrese correo electrónico"
+          required
         ></b-form-input>
+      </div>
+        
       </b-form-group>
 
       <b-form-group
           id="input-group-password"
-          label="Contraseña:"
+          label="Contraseña: *"
           label-for="input-password"
         >
         <b-form-input
@@ -59,11 +62,9 @@ export default {
   data(){
     return{
       modalUsuario: false,
-      email: null,
+      email: "",
       contraseña: null,
-      user: null
-
-
+      user: null,
     }
   },
 
@@ -92,12 +93,13 @@ export default {
             this.user = response.data.info;
 
             localStorage.setItem("userIn", JSON.stringify(response.data.info));
+
             if(this.user.rol === "Agricultor"){
               this.$router.push("/inventario-productos");
             }else if(this.user.rol === "Comprador"){
               this.$router.push("/productosUsuario");
             }else{
-              this.$router.push("/transportista");
+              this.$router.push("/transUsuario");
             }
 
           }
@@ -114,7 +116,7 @@ export default {
       }
       
     },
-    
+
   }
 }
 </script>
